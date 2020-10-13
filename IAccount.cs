@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BankingApplication
 {
     interface IAccount { 
-        void MakeWithdrawl(double amount); 
+        void MakeWithdraw(double amount); 
         void MakeDeposit(double amount); 
         void CalculateInterest();
         string CloseAndReport();

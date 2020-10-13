@@ -8,7 +8,7 @@ namespace BankingApplication
 {
     public enum Status
     {
-        True,
-        False
+        Active,
+        Inactive
     }
 }

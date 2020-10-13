@@ -18,7 +18,7 @@ namespace BankingApplication
 
         protected int
             _deposits,
-            _withdrawls;
+            _withdrawals;
 
         protected Status _status;
 
@@ -44,7 +44,7 @@ namespace BankingApplication
             CalculateInterest();
 
             _deposits = 0;
-            _withdrawls = 0;
+            _withdrawals = 0;
             _amountWithdrawn = 0;
 
             return $"Previous balance: {previousBalance}\nNew balance:  {_currBalance}\nPercentage change from the starting and current balances: {(_currBalance - _startingBalance) / _startingBalance * 100}%\n";
@@ -54,13 +54,15 @@ namespace BankingApplication
         {
             _currBalance += amount;
             _deposits++;
+
+
         }
 
-        public void MakeWithdrawl(double amount)
+        public void MakeWithdraw(double amount)
         {
             _currBalance -= amount;
             _amountWithdrawn += amount;
-            _withdrawls++;
+            _withdrawals++;
         }
     }
 }

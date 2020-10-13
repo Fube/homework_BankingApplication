@@ -10,16 +10,43 @@ namespace BankingApplication
     {
         public SavingsAccount(double balance, double annualInterestRate) : base(balance, annualInterestRate) { }
 
-        public void MakeWithdrawl()
+        public new void MakeWithdraw(double amount)
         {
-            if(_status == Status.False)
+            if(_status == Status.Inactive)
             {
-                throw new AccountDisabledException("Cannot make withdrawl from disabled account", this);
+                throw new AccountDisabledException("Cannot make withdrawal from disabled account", this);
             }
             else
             {
-                MakeWithdrawl();
+                base.MakeWithdraw(amount);
+
+                if (this._currBalance < 25)
+                    this._status = Status.Inactive;
             }
+        }
+
+        public new void MakeDeposit(double amount)
+        {
+
+            if(_status == Status.Inactive && _currBalance + amount > 25)
+            {
+                base.MakeDeposit(amount);
+                _status = Status.Active;
+            }
+            else
+            {
+                base.MakeDeposit(amount);
+            }
+        }
+
+        public new String CloseAndReport()
+        {
+
+            if(_withdrawals < 4)
+            {
+                _serviceCharge += _withdrawals - 4;
+            }
+            return base.CloseAndReport();
         }
     }
 }
