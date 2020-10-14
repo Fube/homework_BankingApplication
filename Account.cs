@@ -51,10 +51,6 @@ namespace BankingApplication
             _amountWithdrawn = 0;
 
             return monthlyReport;
-
-            /* idk?
-            return $"Previous balance: {previousBalance}\nNew balance:  {_currBalance}\nPercentage change from the starting and current balances: {(_currBalance - _startingBalance) / _startingBalance * 100}%\n";
-            */
         }
 
         public void MakeDeposit(double amount)
