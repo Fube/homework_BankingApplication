@@ -2,7 +2,7 @@
 
 namespace BankingApplication {
     public static class ExtensionMethods {
-        public static double GetPercentageChange(this Account instance) => (instance.CurrentBalance - instance.StartingBalance) / instance.StartingBalance * 100; // Method injection??
+        public static double GetPercentageChange(this Account instance) => (instance.CurrentBalance - instance.StartingBalance) / instance.StartingBalance * 100;
 
         public static string ToNAMoneyFormat(this Double instance, bool roundDown) {
             string naFormat;

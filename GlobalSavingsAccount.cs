@@ -13,7 +13,7 @@ namespace BankingApplication
 
         public double USValue(double rate)
         {
-            return _currBalance * rate;
+            return CurrentBalance * rate;
         }
     }
 }

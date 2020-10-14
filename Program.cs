@@ -8,7 +8,7 @@ namespace BankingApplication {
         static Chequing cheAccount;
         static GlobalSavingsAccount gloAccount;
         static void Main(string[] args) {
-            savAccount = new SavingsAccount(5, .10);
+            savAccount = new SavingsAccount(5, 0);
             cheAccount = new Chequing(5, .10);
             gloAccount = new GlobalSavingsAccount(5, .10);
 

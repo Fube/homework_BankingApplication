@@ -12,7 +12,7 @@ namespace BankingApplication
 
         public override void MakeWithdraw(double amount)
         {
-            if(_status == Status.Inactive)
+            if(Status == Status.Inactive)
             {
                 throw new AccountDisabledException("Cannot make withdrawal from disabled account", this);
             }
@@ -20,18 +20,18 @@ namespace BankingApplication
             {
                 base.MakeWithdraw(amount);
 
-                if (this._currBalance < 25)
-                    this._status = Status.Inactive;
+                if (CurrentBalance < 25)
+                    Status = Status.Inactive;
             }
         }
 
         public override void MakeDeposit(double amount)
         {
 
-            if(_status == Status.Inactive && _currBalance + amount > 25)
+            if(Status == Status.Inactive && CurrentBalance + amount > 25)
             {
                 base.MakeDeposit(amount);
-                _status = Status.Active;
+                Status = Status.Active;
             }
             else
             {
@@ -42,9 +42,9 @@ namespace BankingApplication
         public new String CloseAndReport()
         {
 
-            if(_withdrawals < 4)
+            if(Withdrawals < 4)
             {
-                _serviceCharge += _withdrawals - 4;
+                ServiceCharge += Withdrawals - 4;
             }
             return base.CloseAndReport();
         }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,22 +16,30 @@ namespace BankingApplication
     public abstract class Account : IAccount
     {
 
-        // MAKE PRIVATE WITH FORWARDING PROPERTY
-        protected double
+        private double
             _startingBalance,
             _currBalance,
             _amountWithdrawn,
             _annualInterestRate,
             _serviceCharge;
 
-        protected int
+        private int
             _deposits,
             _withdrawals;
 
-        protected Status _status;
+        private Status _status;
 
-        public double StartingBalance => _startingBalance;
-        public double CurrentBalance => _currBalance;
+        public double StartingBalance { get { return _startingBalance; } protected set { _startingBalance = value; } }
+        public double CurrentBalance { get { return _currBalance; } protected set { _currBalance = value; } }
+
+        protected double AmountWithdrawn { get { return _amountWithdrawn; } set { _amountWithdrawn = value; } }
+        protected double AnnualInterestCharge { get { return _annualInterestRate; } set { _annualInterestRate = value; } }
+        protected double ServiceCharge { get { return _serviceCharge; } set { _serviceCharge = value; } }
+        
+        protected int Depostis { get { return _deposits; } set { _deposits = value; } }
+        protected int Withdrawals { get { return _withdrawals; } set { _withdrawals = value; } }
+        
+        protected Status Status { get { return _status; } set { _status = value; } }
 
         public Account(double balance, double annualInterestRate)
         {
@@ -43,14 +52,12 @@ namespace BankingApplication
 
         public void CalculateInterest()
         {
-            _currBalance += (_annualInterestRate / 12) * _currBalance;
+            _currBalance += (_annualInterestRate / 12.0) * _currBalance;
         }
 
         public virtual string CloseAndReport()
         {
             string monthlyReport = $"\n======= \nMONTHLY REPORT \nStarting Balance: {_startingBalance.ToNAMoneyFormat(true)} \nTotal Deposits: {_deposits} \nTotal Withdrawals: {_withdrawals} \nService Charges {_serviceCharge.ToNAMoneyFormat(true)} \nCurrent Balance: {_currBalance.ToNAMoneyFormat(true)} \nAccount Status {_status} \n=======\n";
-
-            double previousBalance = _currBalance;
             _currBalance -= _serviceCharge;
             CalculateInterest();
 
