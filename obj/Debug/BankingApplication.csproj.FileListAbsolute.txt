@@ -5,3 +5,10 @@ C:\Users\waelo\Source\Repos\homework_BankingApplication\obj\Debug\BankingApplica
 C:\Users\waelo\Source\Repos\homework_BankingApplication\obj\Debug\BankingApplication.csproj.CoreCompileInputs.cache
 C:\Users\waelo\Source\Repos\homework_BankingApplication\obj\Debug\BankingApplication.exe
 C:\Users\waelo\Source\Repos\homework_BankingApplication\obj\Debug\BankingApplication.pdb
+C:\Users\Nariman\source\repos\BankingApplication\obj\Debug\BankingApplication.csprojAssemblyReference.cache
+C:\Users\Nariman\source\repos\BankingApplication\obj\Debug\BankingApplication.csproj.CoreCompileInputs.cache
+C:\Users\Nariman\source\repos\BankingApplication\obj\Debug\BankingApplication.exe
+C:\Users\Nariman\source\repos\BankingApplication\obj\Debug\BankingApplication.pdb
+C:\Users\Nariman\source\repos\BankingApplication\bin\Debug\BankingApplication.exe.config
+C:\Users\Nariman\source\repos\BankingApplication\bin\Debug\BankingApplication.exe
+C:\Users\Nariman\source\repos\BankingApplication\bin\Debug\BankingApplication.pdb

@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BankingApplication {
     class Program {
-        private static SavingsAccount savAccount;
-        private static Chequing cheAccount;
-        private static GlobalSavingsAccount gloAccount;
+
+        static SavingsAccount savAccount;
+        static Chequing cheAccount;
+        static GlobalSavingsAccount gloAccount;
         static void Main(string[] args) {
             savAccount = new SavingsAccount(5, .10);
             cheAccount = new Chequing(5, .10);
@@ -14,135 +16,102 @@ namespace BankingApplication {
             string ans = "";
             string temp = "";
 
-            try {
-                do {
-                    Console.WriteLine("Welcome to the Online Bank Service! \nSelect an option from the menu: \nA: Savings \nB: Checking \nC: GlobalSavings \nQ: Exit");
-                    ans = Console.ReadLine().ToUpper();
-                    // Bank Menu
-                    switch (ans) {
-                        // Savings Menu
-                        case "A":
-                            do {
-                                Console.WriteLine("\nSavings Menu: \nA: Deposit \nB: Withdrawal \nC: Close + Report \nR: Return to Bank Menu");
-                                ans = Console.ReadLine().ToUpper();
-                                switch (ans) {
-                                    case "A":
-                                        Console.WriteLine("\nHow much would you like to deposit?");
-                                        temp = Console.ReadLine();
-                                        savAccount.MakeDeposit(CheckMoney(temp, "reg"));
-                                        sheet = false;
-                                        break;
-                                    case "B":
-                                        Console.WriteLine("\nHow much would you like to withdraw?");
-                                        temp = Console.ReadLine();
-                                        savAccount.MakeWithdraw(CheckMoney(temp, "reg"));
-                                        sheet = false;
-                                        break;
-                                    case "C":
-                                        Console.WriteLine(savAccount.CloseAndReport());
-                                        Console.WriteLine($"Percentage Change: {savAccount.GetPercentageChange()}%");
-                                        sheet = true;
-                                        break;
-                                    case "R":
-                                        sheet = true;
-                                        break;
-                                    default:
-                                        Console.WriteLine("\nInvalid option, please choose valid option \n");
-                                        sheet = false;
-                                        break;
-                                }
-                            } while (!sheet);
-                            sheet = false;
-                            break;
-                        // Chequing Menu
-                        case "B":
-                            do {
-                                Console.WriteLine("\nChequing Menu: \nA: Deposit \nB: Withdrawal \nC: Close + Report \nR: Return to Bank Menu");
-                                ans = Console.ReadLine().ToUpper();
-                                switch (ans) {
-                                    case "A":
-                                        Console.WriteLine("\nHow much would you like to deposit?");
-                                        temp = Console.ReadLine();
-                                        cheAccount.MakeDeposit(CheckMoney(temp, "reg"));
-                                        sheet = false;
-                                        break;
-                                    case "B":
-                                        Console.WriteLine("\nHow much would you like to withdraw?");
-                                        temp = Console.ReadLine();
-                                        cheAccount.MakeWithdraw(CheckMoney(temp, "nreg"));
-                                        sheet = false;
-                                        break;
-                                    case "C":
-                                        Console.WriteLine(cheAccount.CloseAndReport());
-                                        Console.WriteLine($"Percentage Change: {cheAccount.GetPercentageChange()}%");
-                                        sheet = true;
-                                        break;
-                                    case "R":
-                                        sheet = true;
-                                        break;
-                                    default:
-                                        Console.WriteLine("\nInvalid option, please choose valid option \n");
-                                        sheet = false;
-                                        break;
-                                }
-                            } while (!sheet);
-                            sheet = false;
-                            break;
-                        // Global Savings Menu
-                        case "C":
-                            do {
-                                Console.WriteLine("\nGlobal Savings Menu: \nA: Deposit \nB: Withdrawal \nC: Close + Report \nD: Report Balance in USD \nR: Return to Bank Menu");
-                                ans = Console.ReadLine().ToUpper();
-                                switch (ans) {
-                                    case "A":
-                                        Console.WriteLine("\nHow much would you like to deposit?");
-                                        temp = Console.ReadLine();
-                                        gloAccount.MakeDeposit(CheckMoney(temp, "reg"));
-                                        sheet = false;
-                                        break;
-                                    case "B":
-                                        Console.WriteLine("\nHow much would you like to withdraw?");
-                                        temp = Console.ReadLine();
-                                        gloAccount.MakeWithdraw(CheckMoney(temp, "reg"));
-                                        sheet = false;
-                                        break;
-                                    case "C":
-                                        Console.WriteLine(gloAccount.CloseAndReport());
-                                        Console.WriteLine($"Percentage Change: {gloAccount.GetPercentageChange()}%");
-                                        sheet = true;
-                                        break;
-                                    case "D":
-                                        Console.WriteLine(gloAccount.USValue(0.76).ToNAMoneyFormat(true));
-                                        sheet = false;
-                                        break;
-                                    case "R":
-                                        sheet = true;
-                                        break;
-                                    default:
-                                        Console.WriteLine("\nInvalid option, please choose valid option");
-                                        ans = Console.ReadLine().ToUpper();
-                                        sheet = false;
-                                        break;
-                                }
-                            } while (!sheet);
-                            sheet = false;
-                            break;
-                        // Back to Bank Menu
-                        case "Q":
-                            sheet = true;
-                            break;
-                        default:
-                            Console.WriteLine("\nInvalid option, please choose valid option \n");
-                            sheet = false;
-                            break;
-                    }
-                } while (!sheet);
-            }
-            catch (Exception ex) {
-                Console.WriteLine(ex.Message);
-                Console.ReadKey();
-            }
+            MenuTreeNode tree = 
+                new MenuTreeNode("root") {
+                    new MenuTreeNode("bank menu", (self) =>
+                    {
+                        Dictionary<string, string> optionToMenu = new Dictionary<string, string>() { { "a", "savings menu" }, { "b", "checking menu" }, { "c", "global savings menu" }, { "q", "quit" } };
 
+                        GetInputFromConsole(
+                            "Welcome to the Online Bank Service! \nSelect an option from the menu: \nA: Savings \nB: Checking \nC: GlobalSavings \nQ: Exit", 
+                            "\nInvalid option, please choose valid option \n", 
+                            input => optionToMenu.ContainsKey(input.ToLower()), 
+                            out string choice
+                        );
+                        self.GetChild(optionToMenu[choice]);
+                    })
+                    {
+                        new MenuTreeNode("savings menu", (self) => 
+                        {
+                             Dictionary<string, Action> optionToAction = new Dictionary<string, Action>() 
+                             {
+                                 { "a", () =>   { DepositScenario(savAccount); self.Execute(); } },
+                                 { "b", () =>   { WithdrawalScenario(savAccount); self.Execute(); } },
+                                 { "c", () =>   { CloseAndReportScenario(savAccount); self.Parent.Execute(); } },
+                                 { "r",           self.Parent.Execute }
+                             };
+                            GetInputFromConsole(
+                                "\nSavings Menu: \nA: Deposit \nB: Withdrawal \nC: Close + Report \nR: Return to Bank Menu",
+                                "\nInvalid option, please choose valid option \n",
+                                input => optionToAction.ContainsKey(input.ToLower()),
+                                out string choice
+                            );
+
+                            optionToAction[choice]();
+                        }),
+                        new MenuTreeNode("checking menu", (self) =>
+                        {
+                            Dictionary<string, Action> optionToAction = new Dictionary<string, Action>()
+                             {
+                                 { "a", () =>   { DepositScenario(cheAccount); self.Execute(); } },
+                                 { "b", () =>   { WithdrawalScenario(cheAccount); self.Execute(); } },
+                                 { "c", () =>   { CloseAndReportScenario(cheAccount); self.Parent.Execute(); } },
+                                 { "r",           self.Parent.Execute }
+                             };
+                            GetInputFromConsole(
+                                "\nSavings Menu: \nA: Deposit \nB: Withdrawal \nC: Close + Report \nR: Return to Bank Menu",
+                                "\nInvalid option, please choose valid option \n",
+                                input => optionToAction.ContainsKey(input.ToLower()),
+                                out string choice
+                            );
+
+                            optionToAction[choice]();
+                        }),
+                        new MenuTreeNode("global savings menu", (self) => 
+                        {
+                            Dictionary<string, Action> optionToAction = new Dictionary<string, Action>()
+                             {
+                                 { "a", () =>   { DepositScenario(gloAccount); self.Execute(); } },
+                                 { "b", () =>   { WithdrawalScenario(gloAccount); self.Execute(); } },
+                                 { "c", () =>   { CloseAndReportScenario(gloAccount); self.Parent.Execute(); } },
+                                 { "d", () =>   { Console.WriteLine(gloAccount.USValue(0.76).ToNAMoneyFormat(true)); self.Execute(); } },
+                                 { "r",           self.Parent.Execute }
+                             };
+                            GetInputFromConsole(
+                                "\nSavings Menu: \nA: Deposit \nB: Withdrawal\nC: Close and Report \nD: Report Balance in USD\nR: Return to Bank Menu",
+                                "\nInvalid option, please choose valid option \n",
+                                input => optionToAction.ContainsKey(input.ToLower()),
+                                out string choice
+                            );
+
+                            optionToAction[choice]();
+                        }),
+                        new MenuTreeNode("quit", _ => Console.WriteLine("Goodbye"))
+                    }
+                };
+
+
+            tree.GetChild("bank menu");
+            System.Threading.Thread.Sleep(1500);
+
+        }
+
+        private static void DepositScenario(Account acc)
+        {
+            GetInputFromConsole("\nHow much would you like to deposit?", "", _ => true, out string amount);
+            acc.MakeDeposit(CheckMoney(amount, "reg"));
+        }
+
+        private static void WithdrawalScenario(Account acc)
+        {
+            GetInputFromConsole("\nHow much would you like to withdraw?", "", _ => true, out string amount);
+            acc.MakeWithdraw(CheckMoney(amount, acc is Chequing ? "nreg" : "reg"));
+        }
+
+        private static void CloseAndReportScenario(Account acc)
+        {
+            Console.WriteLine(acc.CloseAndReport());
+             Console.WriteLine($"Percentage Change: {acc.GetPercentageChange()}%");
         }
 
         private static double CheckMoney(string temp, string type) {
@@ -171,6 +140,24 @@ namespace BankingApplication {
             } while (!sheet);
 
             return 0;
+        }
+
+        private static void GetInputFromConsole<T>(string question, string error, Predicate<string> predicate, out T output)
+        {
+
+            string temporaryInput;
+            bool first = true;
+            Console.WriteLine(question);
+            do
+            {
+                if (!first)
+                    Console.WriteLine(error);
+
+                temporaryInput = Console.ReadLine();
+                first = false;
+            } while (!predicate.Invoke(temporaryInput));
+
+            output = (T)Convert.ChangeType(temporaryInput, typeof(T));
         }
 
     }
