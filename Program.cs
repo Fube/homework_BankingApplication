@@ -12,14 +12,13 @@ namespace BankingApplication {
             cheAccount = new Chequing(5, .10);
             gloAccount = new GlobalSavingsAccount(5, .10);
 
-            bool sheet;
-            string ans = "";
-            string temp = "";
+            MenuTreeNode lastWorkingNode = null;
 
             MenuTreeNode tree = 
                 new MenuTreeNode("root") {
                     new MenuTreeNode("bank menu", (self) =>
                     {
+                        lastWorkingNode = self;
                         Dictionary<string, string> optionToMenu = new Dictionary<string, string>() { { "a", "savings menu" }, { "b", "checking menu" }, { "c", "global savings menu" }, { "q", "quit" } };
 
                         GetInputFromConsole(
@@ -33,6 +32,7 @@ namespace BankingApplication {
                     {
                         new MenuTreeNode("savings menu", (self) => 
                         {
+                            lastWorkingNode = self;
                              Dictionary<string, Action> optionToAction = new Dictionary<string, Action>() 
                              {
                                  { "a", () =>   { DepositScenario(savAccount); self.Execute(); } },
@@ -51,6 +51,7 @@ namespace BankingApplication {
                         }),
                         new MenuTreeNode("checking menu", (self) =>
                         {
+                            lastWorkingNode = self;
                             Dictionary<string, Action> optionToAction = new Dictionary<string, Action>()
                              {
                                  { "a", () =>   { DepositScenario(cheAccount); self.Execute(); } },
@@ -69,6 +70,7 @@ namespace BankingApplication {
                         }),
                         new MenuTreeNode("global savings menu", (self) => 
                         {
+                            lastWorkingNode = self;
                             Dictionary<string, Action> optionToAction = new Dictionary<string, Action>()
                              {
                                  { "a", () =>   { DepositScenario(gloAccount); self.Execute(); } },
@@ -90,8 +92,24 @@ namespace BankingApplication {
                     }
                 };
 
+            try
+            {
+                tree.GetChild("bank menu");
+            }
+            catch (AccountDisabledException e)
+            {
+                Console.WriteLine(e.Message);
 
-            tree.GetChild("bank menu");
+                if (lastWorkingNode != null)
+                    lastWorkingNode.Execute();
+                else
+                    tree.GetChild("bank menu");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("\n\n\nSomething went horribly wrong...\nReturning to start menu\n\n\n");
+                tree.GetChild("bank menu");
+            }
             System.Threading.Thread.Sleep(1500);
 
         }
@@ -99,19 +117,34 @@ namespace BankingApplication {
         private static void DepositScenario(Account acc)
         {
             GetInputFromConsole("\nHow much would you like to deposit?", "", _ => true, out string amount);
+            Convert.ChangeType( acc, acc.GetType() );
             acc.MakeDeposit(CheckMoney(amount, "reg"));
         }
 
         private static void WithdrawalScenario(Account acc)
         {
             GetInputFromConsole("\nHow much would you like to withdraw?", "", _ => true, out string amount);
+
+            // Don't need to type cast anymore because we did virtual...override
+            //if(acc is SavingsAccount savings)
+            //{
+            //    acc = savings;
+            //}
+            //if(acc is Chequing chequing)
+            //{
+            //    acc = chequing;
+            //}
+            //if (acc is GlobalSavingsAccount global)
+            //{
+            //    acc = global;
+            //}
             acc.MakeWithdraw(CheckMoney(amount, acc is Chequing ? "nreg" : "reg"));
         }
 
         private static void CloseAndReportScenario(Account acc)
         {
             Console.WriteLine(acc.CloseAndReport());
-             Console.WriteLine($"Percentage Change: {acc.GetPercentageChange()}%");
+            Console.WriteLine($"Percentage Change: {acc.GetPercentageChange()}%");
         }
 
         private static double CheckMoney(string temp, string type) {

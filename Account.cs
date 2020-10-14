@@ -6,9 +6,16 @@ using System.Threading.Tasks;
 
 namespace BankingApplication
 {
+
+    public enum Status
+    {
+        Active,
+        Inactive
+    }
     public abstract class Account : IAccount
     {
 
+        // MAKE PRIVATE WITH FORWARDING PROPERTY
         protected double
             _startingBalance,
             _currBalance,
@@ -30,6 +37,7 @@ namespace BankingApplication
             _startingBalance = balance;
             _currBalance = _startingBalance;
             _annualInterestRate = annualInterestRate;
+            _status = balance < 25 ? Status.Inactive : Status.Active;
         }
 
 
@@ -38,7 +46,7 @@ namespace BankingApplication
             _currBalance += (_annualInterestRate / 12) * _currBalance;
         }
 
-        public string CloseAndReport()
+        public virtual string CloseAndReport()
         {
             string monthlyReport = $"\n======= \nMONTHLY REPORT \nStarting Balance: {_startingBalance.ToNAMoneyFormat(true)} \nTotal Deposits: {_deposits} \nTotal Withdrawals: {_withdrawals} \nService Charges {_serviceCharge.ToNAMoneyFormat(true)} \nCurrent Balance: {_currBalance.ToNAMoneyFormat(true)} \nAccount Status {_status} \n=======\n";
 
@@ -53,15 +61,13 @@ namespace BankingApplication
             return monthlyReport;
         }
 
-        public void MakeDeposit(double amount)
+        public virtual void MakeDeposit(double amount)
         {
             _currBalance += amount;
             _deposits++;
-
-
         }
 
-        public void MakeWithdraw(double amount)
+        public virtual void MakeWithdraw(double amount)
         {
             _currBalance -= amount;
             _amountWithdrawn += amount;

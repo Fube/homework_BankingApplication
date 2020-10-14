@@ -10,7 +10,7 @@ namespace BankingApplication
     {
         public SavingsAccount(double balance, double annualInterestRate) : base(balance, annualInterestRate) { }
 
-        public new void MakeWithdraw(double amount)
+        public override void MakeWithdraw(double amount)
         {
             if(_status == Status.Inactive)
             {
@@ -25,7 +25,7 @@ namespace BankingApplication
             }
         }
 
-        public new void MakeDeposit(double amount)
+        public override void MakeDeposit(double amount)
         {
 
             if(_status == Status.Inactive && _currBalance + amount > 25)
