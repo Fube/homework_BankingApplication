@@ -1,0 +1,7 @@
+C:\Users\waelo\Source\Repos\homework_BankingApplication\bin\Debug\BankingApplication.exe.config
+C:\Users\waelo\Source\Repos\homework_BankingApplication\bin\Debug\BankingApplication.exe
+C:\Users\waelo\Source\Repos\homework_BankingApplication\bin\Debug\BankingApplication.pdb
+C:\Users\waelo\Source\Repos\homework_BankingApplication\obj\Debug\BankingApplication.csprojAssemblyReference.cache
+C:\Users\waelo\Source\Repos\homework_BankingApplication\obj\Debug\BankingApplication.csproj.CoreCompileInputs.cache
+C:\Users\waelo\Source\Repos\homework_BankingApplication\obj\Debug\BankingApplication.exe
+C:\Users\waelo\Source\Repos\homework_BankingApplication\obj\Debug\BankingApplication.pdb
