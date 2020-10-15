@@ -1,4 +1,4 @@
-# Word Unscrambler
+# Banking Application
 
 ## [Video Can Be Found Here](https://youtu.be/Xx7kKJqK4bQ)
 
