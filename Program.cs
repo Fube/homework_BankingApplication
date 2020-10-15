@@ -8,93 +8,93 @@ namespace BankingApplication {
         static Chequing cheAccount;
         static GlobalSavingsAccount gloAccount;
         static void Main(string[] args) {
-            savAccount = new SavingsAccount(5, 0);
+            savAccount = new SavingsAccount(5, .10);
             cheAccount = new Chequing(5, .10);
             gloAccount = new GlobalSavingsAccount(5, .10);
 
             MenuTreeNode lastWorkingNode = null;
 
             MenuTreeNode tree = 
-                new MenuTreeNode("root") {
-                    new MenuTreeNode("bank menu", (self) =>
+                new MenuTreeNode("bank menu", (self) =>
+                {
+                    lastWorkingNode = self;
+                    Dictionary<string, string> optionToMenu = new Dictionary<string, string>() { { "a", "savings menu" }, { "b", "checking menu" }, { "c", "global savings menu" }, { "q", "quit" } };
+
+                    GetInputFromConsole(
+                        "Welcome to the Online Bank Service! \nSelect an option from the menu: \nA: Savings \nB: Checking \nC: GlobalSavings \nQ: Exit", 
+                        "\nInvalid option, please choose valid option \n", 
+                        input => optionToMenu.ContainsKey(input.ToLower()), 
+                        out string choice
+                    );
+                    self.GetChild(optionToMenu[choice]);
+                })
+                // Everything below this is a CHILD / BRANCH of the node "bank menu"
+                {
+                    new MenuTreeNode("savings menu", (self) => 
                     {
                         lastWorkingNode = self;
-                        Dictionary<string, string> optionToMenu = new Dictionary<string, string>() { { "a", "savings menu" }, { "b", "checking menu" }, { "c", "global savings menu" }, { "q", "quit" } };
-
+                            Dictionary<string, Action> optionToAction = new Dictionary<string, Action>() 
+                            {
+                                { "a", () =>   { DepositScenario(savAccount); self.Execute(); } },
+                                { "b", () =>   { WithdrawalScenario(savAccount); self.Execute(); } },
+                                { "c", () =>   { CloseAndReportScenario(savAccount); self.Parent.Execute(); } },
+                                { "r",           self.Parent.Execute }
+                            };
                         GetInputFromConsole(
-                            "Welcome to the Online Bank Service! \nSelect an option from the menu: \nA: Savings \nB: Checking \nC: GlobalSavings \nQ: Exit", 
-                            "\nInvalid option, please choose valid option \n", 
-                            input => optionToMenu.ContainsKey(input.ToLower()), 
+                            "\nSavings Menu: \nA: Deposit \nB: Withdrawal \nC: Close + Report \nR: Return to Bank Menu",
+                            "\nInvalid option, please choose valid option \n",
+                            input => optionToAction.ContainsKey(input.ToLower()),
                             out string choice
                         );
-                        self.GetChild(optionToMenu[choice]);
-                    })
+
+                        optionToAction[choice]();
+                    }),
+                    new MenuTreeNode("checking menu", (self) =>
                     {
-                        new MenuTreeNode("savings menu", (self) => 
-                        {
-                            lastWorkingNode = self;
-                             Dictionary<string, Action> optionToAction = new Dictionary<string, Action>() 
-                             {
-                                 { "a", () =>   { DepositScenario(savAccount); self.Execute(); } },
-                                 { "b", () =>   { WithdrawalScenario(savAccount); self.Execute(); } },
-                                 { "c", () =>   { CloseAndReportScenario(savAccount); self.Parent.Execute(); } },
-                                 { "r",           self.Parent.Execute }
-                             };
-                            GetInputFromConsole(
-                                "\nSavings Menu: \nA: Deposit \nB: Withdrawal \nC: Close + Report \nR: Return to Bank Menu",
-                                "\nInvalid option, please choose valid option \n",
-                                input => optionToAction.ContainsKey(input.ToLower()),
-                                out string choice
-                            );
+                        lastWorkingNode = self;
+                        Dictionary<string, Action> optionToAction = new Dictionary<string, Action>()
+                            {
+                                { "a", () =>   { DepositScenario(cheAccount); self.Execute(); } },
+                                { "b", () =>   { WithdrawalScenario(cheAccount); self.Execute(); } },
+                                { "c", () =>   { CloseAndReportScenario(cheAccount); self.Parent.Execute(); } },
+                                { "r",           self.Parent.Execute }
+                            };
+                        GetInputFromConsole(
+                            "\nSavings Menu: \nA: Deposit \nB: Withdrawal \nC: Close + Report \nR: Return to Bank Menu",
+                            "\nInvalid option, please choose valid option \n",
+                            input => optionToAction.ContainsKey(input.ToLower()),
+                            out string choice
+                        );
 
-                            optionToAction[choice]();
-                        }),
-                        new MenuTreeNode("checking menu", (self) =>
-                        {
-                            lastWorkingNode = self;
-                            Dictionary<string, Action> optionToAction = new Dictionary<string, Action>()
-                             {
-                                 { "a", () =>   { DepositScenario(cheAccount); self.Execute(); } },
-                                 { "b", () =>   { WithdrawalScenario(cheAccount); self.Execute(); } },
-                                 { "c", () =>   { CloseAndReportScenario(cheAccount); self.Parent.Execute(); } },
-                                 { "r",           self.Parent.Execute }
-                             };
-                            GetInputFromConsole(
-                                "\nSavings Menu: \nA: Deposit \nB: Withdrawal \nC: Close + Report \nR: Return to Bank Menu",
-                                "\nInvalid option, please choose valid option \n",
-                                input => optionToAction.ContainsKey(input.ToLower()),
-                                out string choice
-                            );
+                        optionToAction[choice]();
+                    }),
+                    new MenuTreeNode("global savings menu", (self) => 
+                    {
+                        lastWorkingNode = self;
+                        Dictionary<string, Action> optionToAction = new Dictionary<string, Action>()
+                            {
+                                { "a", () =>   { DepositScenario(gloAccount); self.Execute(); } },
+                                { "b", () =>   { WithdrawalScenario(gloAccount); self.Execute(); } },
+                                { "c", () =>   { CloseAndReportScenario(gloAccount); self.Parent.Execute(); } },
+                                { "d", () =>   { Console.WriteLine(gloAccount.USValue(0.76).ToNAMoneyFormat(true)); self.Execute(); } },
+                                { "r",           self.Parent.Execute }
+                            };
+                        GetInputFromConsole(
+                            "\nSavings Menu: \nA: Deposit \nB: Withdrawal\nC: Close and Report \nD: Report Balance in USD\nR: Return to Bank Menu",
+                            "\nInvalid option, please choose valid option \n",
+                            input => optionToAction.ContainsKey(input.ToLower()),
+                            out string choice
+                        );
 
-                            optionToAction[choice]();
-                        }),
-                        new MenuTreeNode("global savings menu", (self) => 
-                        {
-                            lastWorkingNode = self;
-                            Dictionary<string, Action> optionToAction = new Dictionary<string, Action>()
-                             {
-                                 { "a", () =>   { DepositScenario(gloAccount); self.Execute(); } },
-                                 { "b", () =>   { WithdrawalScenario(gloAccount); self.Execute(); } },
-                                 { "c", () =>   { CloseAndReportScenario(gloAccount); self.Parent.Execute(); } },
-                                 { "d", () =>   { Console.WriteLine(gloAccount.USValue(0.76).ToNAMoneyFormat(true)); self.Execute(); } },
-                                 { "r",           self.Parent.Execute }
-                             };
-                            GetInputFromConsole(
-                                "\nSavings Menu: \nA: Deposit \nB: Withdrawal\nC: Close and Report \nD: Report Balance in USD\nR: Return to Bank Menu",
-                                "\nInvalid option, please choose valid option \n",
-                                input => optionToAction.ContainsKey(input.ToLower()),
-                                out string choice
-                            );
-
-                            optionToAction[choice]();
-                        }),
-                        new MenuTreeNode("quit", _ => Console.WriteLine("Goodbye"))
-                    }
+                        optionToAction[choice]();
+                    }),
+                    new MenuTreeNode("quit", _ => Console.WriteLine("Goodbye"))
+                    
                 };
 
             try
             {
-                tree.GetChild("bank menu");
+                tree.Execute();
             }
             catch (AccountDisabledException e)
             {
@@ -103,12 +103,12 @@ namespace BankingApplication {
                 if (lastWorkingNode != null)
                     lastWorkingNode.Execute();
                 else
-                    tree.GetChild("bank menu");
+                    tree.Execute();
             }
             catch (Exception e)
             {
                 Console.WriteLine("\n\n\nSomething went horribly wrong...\nReturning to start menu\n\n\n");
-                tree.GetChild("bank menu");
+                tree.Execute();
             }
             System.Threading.Thread.Sleep(1500);
 
