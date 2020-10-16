@@ -39,7 +39,7 @@ namespace BankingApplication
             }
         }
 
-        public new String CloseAndReport()
+        public override String CloseAndReport()
         {
 
             if(Withdrawals < 4)

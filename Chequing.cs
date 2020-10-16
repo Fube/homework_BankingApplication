@@ -12,7 +12,7 @@ namespace BankingApplication
         public Chequing(double balance, double annualInterestRate) : base(balance, annualInterestRate) { }
     
         
-        public new void MakeWithdraw(double amount)
+        public override void MakeWithdraw(double amount)
         {
 
             if(CurrentBalance - amount < 0) // User does not have money, so they get charged
@@ -25,12 +25,12 @@ namespace BankingApplication
             }
         }
 
-        public new void MakeDeposit(double amount)
+        public override void MakeDeposit(double amount)
         {
             base.MakeDeposit(amount);
         }
 
-        public new string CloseAndReport()
+        public override string CloseAndReport()
         {
             ServiceCharge += 5 + (0.1 * Withdrawals);
             return base.CloseAndReport();
