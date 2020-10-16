@@ -50,7 +50,7 @@ namespace BankingApplication
         }
 
 
-        public void CalculateInterest()
+        public virtual void CalculateInterest()
         {
             _currBalance += (_annualInterestRate / 12.0) * _currBalance;
         }
