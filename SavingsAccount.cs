@@ -42,7 +42,7 @@ namespace BankingApplication
         public override String CloseAndReport()
         {
 
-            if(Withdrawals < 4)
+            if(Withdrawals > 4)
             {
                 ServiceCharge += Withdrawals - 4;
             }

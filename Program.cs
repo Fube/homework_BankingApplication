@@ -117,27 +117,12 @@ namespace BankingApplication {
         private static void DepositScenario(Account acc)
         {
             GetInputFromConsole("\nHow much would you like to deposit?", "", _ => true, out string amount);
-            Convert.ChangeType( acc, acc.GetType() );
             acc.MakeDeposit(CheckMoney(amount, "reg"));
         }
 
         private static void WithdrawalScenario(Account acc)
         {
             GetInputFromConsole("\nHow much would you like to withdraw?", "", _ => true, out string amount);
-
-            // Don't need to type cast anymore because we did virtual...override
-            //if(acc is SavingsAccount savings)
-            //{
-            //    acc = savings;
-            //}
-            //if(acc is Chequing chequing)
-            //{
-            //    acc = chequing;
-            //}
-            //if (acc is GlobalSavingsAccount global)
-            //{
-            //    acc = global;
-            //}
             acc.MakeWithdraw(CheckMoney(amount, acc is Chequing ? "nreg" : "reg"));
         }
 

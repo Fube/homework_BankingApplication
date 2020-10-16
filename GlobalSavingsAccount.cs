@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BankingApplication
 {
-    class GlobalSavingsAccount : SavingsAccount
+    class GlobalSavingsAccount : SavingsAccount, IExchangeable
     {
 
         public GlobalSavingsAccount(double balance, double annualInterestRate) : base(balance, annualInterestRate) { }
